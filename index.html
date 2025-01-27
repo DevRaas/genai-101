@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Fun Fact Generator</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            animation: backgroundAnimation 15s infinite alternate;
+        }
+
+        /* Container Styles */
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Heading Styles */
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ff007f;
+            font-family: 'Segoe UI', sans-serif;
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        /* Fact Styles */
+        #fact {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            animation: slideInUp 0.7s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #fact:hover {
+            background-color: #e6e6e6;
+            transform: scale(1.02);
+            animation: shake 0.5s;
+        }
+
+        /* Button Styles */
+        button {
+            padding: 12px 25px;
+            font-size: 1.2em;
+            background-color: #2575fc;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            animation: bounce 1s infinite;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #6a11cb;
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Like Button Styles */
+        #likeButton {
+            background-color: #28a745;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #likeButton:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        /* Dropdown Styles */
+        select {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            button {
+                font-size: 1em;
+            }
+
+            #fact {
+                font-size: 1em;
+            }
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInUp {
+            0% {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            25% { transform: translate(-1px, -2px) rotate(-1deg); }
+            50% { transform: translate(-1px, 2px) rotate(1deg); }
+            75% { transform: translate(1px, 1px) rotate(0deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        @keyframes backgroundAnimation {
+            0% { background: linear-gradient(to right, #ff6a00, #ee0979); }
+            25% { background: linear-gradient(to right, #00c6ff, #0072ff); }
+            50% { background: linear-gradient(to right, #ff007f, #ff6a00); }
+            75% { background: linear-gradient(to right, #6a11cb, #2575fc); }
+            100% { background: linear-gradient(to right, #ff6a00, #ee0979); }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Random Fun Fact Generator</h1>
+        <select id="categorySelect">
+            <option value="all">All Facts</option>
+            <option value="nature">Nature Facts</option>
+            <option value="science">Science Facts</option>
+            <option value="history">History Facts</option>
+        </select>
+        <p id="fact"></p>
+        <button id="generate">Generate Another Fun Fact</button>
+        <button id="likeButton">Like <span id="likeCount">0</span></button>
+    </div>
+
+    <script>
+        const facts = {
+            all: [
+                "I love hiking and have traveled to five national parks.",
+                "I am an avid reader and read around 28 books per year.",
+                "I once baked a 3-tiered cake for a family gathering!",
+                "I speak three languages fluently.",
+                "I'm learning to play the guitar in my free time.",
+                "Honey never spoils. Archaeologists have found pots of honey in ancient tombs that are over 3,000 years old!",
+                "An octopus has three hearts and blue blood.",
+                "Bananas are berries, but strawberries are not.",
+                "A group of flamingos is called a 'flamboyance'.",
+                "The Eiffel Tower can be 15 cm taller during the summer due to the expansion of iron in the heat.",
+                "Cows have best friends and get stressed when separated from them.",
+                "A day on Venus is longer than a year on Venus.",
+                "Did you know? The shortest war in history was between Britain and Zanzibar on August 27, 1896. Zanzibar surrendered after 38 minutes!",
+                "A single cloud can weigh more than a million pounds.",
+                "Wombat poop is cube-shaped to prevent it from rolling away.",
+                "The human nose can detect over 1 trillion different scents.",
+                "The moon has moonquakes, which are similar to earthquakes on Earth.",
+                "Sharks have been around longer than trees, dating back over 400 million years.",
+                "Koalas sleep for up to 22 hours a day.",
+                "Some cats are allergic to humans."
+            ],
+            nature: [
+                "Honey never spoils. Archaeologists have found pots of honey in ancient tombs that are over 3,000 years old!",
+                "An octopus has three hearts and blue blood.",
+                "Bananas are berries, but strawberries are not.",
+                "A group of flamingos is called a 'flamboyance'.",
+                "Cows have best friends and get stressed when separated from them.",
+                "Koalas sleep for up to 22 hours a day."
+            ],
+            science: [
+                "I speak three languages fluently.",
+                "The human nose can detect over 1 trillion different scents.",
+                "A day on Venus is longer than a year on Venus.",
+                "Wombat poop is cube-shaped to prevent it from rolling away.",
+                "Sharks have been around longer than trees, dating back over 400 million years."
+            ],
+            history: [
+                "Did you know? The shortest war in history was between Britain and Zanzibar on August 27, 1896. Zanzibar surrendered after 38 minutes!",
+                "The Eiffel Tower can be 15 cm taller during the summer due to the expansion of iron in the heat.",
+                "I once baked a 3-tiered cake for a family gathering!"
+            ]
+        };
+
+        let likeCount = 0;
+
+        function generateFact() {
+            const category = document.getElementById('categorySelect').value;
+            const selectedFacts = facts[category];
+            const randomIndex = Math.floor(Math.random() * selectedFacts.length);
+            document.getElementById('fact').innerText = selectedFacts[randomIndex];
+            likeCount = 0; // Reset like count
+            document.getElementById('likeCount').innerText = likeCount; // Update like count display
+            
+            // Trigger animation for the fact text
+            const factElement = document.getElementById('fact');
+            factElement.classList.remove('animate');
+            void factElement.offsetWidth; // Trigger reflow for animation reset
+            factElement.classList.add('animate');
+        }
+
+        document.getElementById('generate').addEventListener('click', generateFact);
+
+        document.getElementById('likeButton').addEventListener('click', () => {
+            likeCount++;
+            document.getElementById('likeCount').innerText = likeCount;
+            alert("You liked this fact! 🎉");
+        });
+
+        // Generate the first fact on page load
+        generateFact();
+    </script>
+</body>
+</html>
